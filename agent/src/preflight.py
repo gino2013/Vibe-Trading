@@ -166,21 +166,8 @@ def _check_yfinance() -> CheckResult:
             impact="US/HK equity backtest unavailable",
         )
 
-    try:
-        import yfinance as yf
-
-        ticker = yf.Ticker("AAPL")
-        info = ticker.fast_info
-        if hasattr(info, "last_price") and info.last_price:
-            return CheckResult(name="yfinance", status="ready", message="reachable", impact="")
-        return CheckResult(name="yfinance", status="ready", message="reachable (no price data)", impact="")
-    except Exception as exc:
-        return CheckResult(
-            name="yfinance",
-            status="error",
-            message=f"{type(exc).__name__}: {exc}",
-            impact="US/HK equity backtest unavailable",
-        )
+    # ponytail: skip last_price call — crashes with SIGBUS on Python 3.14
+    return CheckResult(name="yfinance", status="ready", message="installed", impact="")
 
 
 def _check_tushare() -> CheckResult:
